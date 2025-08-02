@@ -1,11 +1,11 @@
 # Line-Following-Robot
 
 Hardware Used:   
--motors, chassis, jumper wires, L298N driver, Rasberry Pi Camera, Rasberry Pi Computer.  
+-motors, chassis, jumper wires, L298N driver, Rasberry Pi Camera, Rasberry Pi Computer, double AA batteries, SD Card.  
 -all components put together from scratch.
 
 Software Used:   
--ROS, C++, Python.  
+-ROS, C++, Python, Ubuntu OS.
 
 How to run the code:    
 -Build and Source your ROS Workspace!  
