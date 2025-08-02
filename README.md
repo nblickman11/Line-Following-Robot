@@ -14,5 +14,5 @@ How to run the code:
 -Run the Line Follower Node: Includes a centroid calculation to publish the correct linear and angular values.  
 -Run the Motor Controller Node:  Sends the correct signal to the correct motor over the gpio pins, for the right amount of time.  
 
-Demo:
+Demo:  
 -Download .mp4 file to see it live!
