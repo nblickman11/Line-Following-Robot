@@ -51,4 +51,11 @@ I went into my launch file: in the /opt directroy:
 -i changed the file in 3 spots 
 
 Run from VM:
-LIBGL_ALWAYS_SOFTWARE=1 ros2 run rtabmap_viz rtabmap_viz --ros-args -r __node:=rtabmap_viz -r __ns:=/rtabmap
+LIBGL_ALWAYS_SOFTWARE=1 ros2 run rtabmap_viz rtabmap_viz --ros-args -r __node:=rtabmap_viz -r __ns:=/rtabmap  
+
+Other SLAM Notes:
+SLAM PICKUP:
+https://wiki.ros.org/rtabmap_ros/Tutorials/SetupOnYourRobot
+https://introlab.github.io/rtabmap/
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 odom base_link
+ros2 run tf2_ros static_transform_publisher 0.1 0 0.15 0 0 0 
