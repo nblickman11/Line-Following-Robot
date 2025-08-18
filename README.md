@@ -21,11 +21,11 @@ Demo:
 
 Improvements:  
 -The faster robot was thanks to adjusting camera location, and increasing frame rate I published in the Camera Driver Node.  
--Also, I reduced the frames sent to the motor later down the node pipeline so that the motor control keep keep up with the images it was seeing in real time.  
+-Also, I reduced the frames sent to the motor later down the node pipeline so that the motor control could keep up with the images it was seeing in real time.  
 -In addition, in the motor node, I compare the resulting value of the P-Control centroid calculation which represents our error from the center, to, a threshold.
 An error that is higher than the threshold resulted in a turn, but this was causing too much over-correction, and the robot moved horizontally too much.  
 Increasing that threshold value allowed for less turns, and a faster robot.  
--A faster robot started to overshoot the turns, so I increased the size of the image to look further ahead.
+-This faster robot started to overshoot the turns, so I increased the size of the image to look further ahead, which successfully prevented this.
 
 ...
 Future SLAM:
