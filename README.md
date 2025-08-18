@@ -13,10 +13,18 @@ How to run the code:
 -Run the Image Filter Node: turn pixels to either white or black so we know where the white line is.  Slice and use only the bottom of the image, and convert it to a ROS image.  
 -Run the Line Follower Node: Includes a centroid calculation to publish the correct linear and angular values.  
 -Run the Motor Controller Node:  Sends the correct signal to the correct motor over the gpio pins, for the right amount of time.  
+-To run the code of the faster robot, you must swap src folder with faster_src folder.
 
 Demo:  
--Download .mp4 file to see it live!  
+-Download .mp4 file = 54 second robot  
+-Download .mov file = 38 second robot  
 
+ Changes:
+ -The faster robot was thanks to adjusting camera location, increasing publishing frame rate for speed, but reducing frames sent to the motor later  
+ in the node pipeline, increase the height of the frame to capture what's ahead.  
+ -Also, in the motor node, I compare the resulting value of the P-Control centroid calculation which represents our error from the center, to, a threshold.
+An error that is higher than the threshold resulted in a turn, but this was causing too much over-correction, and the robot moved horizontally too much.  
+Increasing the the threshold allowed for less turns, and a faster robot.
 
 ...
 Future SLAM:
