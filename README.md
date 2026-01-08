@@ -1,7 +1,7 @@
 # Line-Following-Robot
 
 Hardware Used:   
--motors, chassis, jumper wires, L298N driver, Rasberry Pi Camera, Rasberry Pi Computer, double AA batteries, SD Card.  
+-Motors, Chassis, Dupont Wires, L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card.  
 -all components put together from scratch.
 
 Software Used:   
