@@ -2,7 +2,6 @@
 
 Hardware Used:   
 -Motors, Chassis, Dupont Wires, L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card.  
--all components put together from scratch.
 
 Software Used:   
 -ROS, C++, Python, Ubuntu OS.
