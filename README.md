@@ -1,16 +1,19 @@
 # Line-Following-Robot
 
-#### Summary: I built a ROS 2-based autonomous line-following robot from scratch using a Raspberry Pi. The robot performs real-time computer vision using an onboard camera, computes steering commands with centroid-based proportional control, and controls a differential-drive platform through a modular ROS 2 software architecture.
+#### Summary: 
+I built a ROS 2-based autonomous line-following robot from scratch using a Raspberry Pi. The robot performs real-time computer vision using an onboard camera, computes steering commands with centroid-based proportional control, and controls a differential-drive platform through a modular ROS 2 software architecture.
 
-Link to the video:
+#### Video Link:
 https://youtube.com/shorts/W9OxeIG6SVM?feature=share
 
-Hardware Used:   
--Motors, Chassis, Dupont Wires, L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card.  
-
+#### Hardware Used:   
+-L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card, Motors, Chassis, Dupont Wires.  
 <img width="384" height="512" alt="IMG_0534" src="https://github.com/user-attachments/assets/23201af6-87ec-41c3-a4cd-59e60bc1b80b" />
 <img width="248" height="325" alt="Screenshot 2026-06-30 at 3 50 09 PM" src="https://github.com/user-attachments/assets/ad7a8110-d954-4186-95e0-84866be1b838" />
 <img width="166" height="190" alt="Screenshot 2026-06-30 at 3 50 03 PM" src="https://github.com/user-attachments/assets/e439481e-6874-45e8-baa0-f11a56b1b4ca" />
+
+#### System Architecture:  
+<img width="526" height="463" alt="Screenshot 2026-06-30 at 4 57 26 PM" src="https://github.com/user-attachments/assets/a46be888-1a78-467c-9791-1c12c59900e4" />
 
 Software Used:   
 -ROS, C++, Python, Ubuntu OS.
