@@ -1,6 +1,6 @@
 # Line-Following-Robot
 
-I built a ROS 2-based autonomous line-following robot from scratch using a Raspberry Pi. The robot performs real-time image processing from an onboard camera, computes steering commands using centroid-based control, and drives motors through a motor driver.
+I built a ROS 2-based autonomous line-following robot from scratch using a Raspberry Pi. The robot performs real-time computer vision using an onboard camera, computes steering commands with centroid-based proportional control, and controls a differential-drive platform through a modular ROS 2 software architecture.
 
 Hardware Used:   
 -Motors, Chassis, Dupont Wires, L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card.  
