@@ -23,17 +23,33 @@ GStreamer – Camera streaming framework.
 C++ – Core robotics software implementation.  
 GPIO Library – Controls the L298N motor driver via Raspberry Pi GPIO pins.  
 
-How to run the code:    
--Build and Source your ROS Workspace!  
--Run the Camera Driver Node: streams in camera images.  
--Run the Image Filter Node: turn pixels to either white or black so we know where the white line is.  Slice and use only the bottom of the image, and convert it to a ROS image.  
--Run the Line Follower Node: Includes a centroid calculation to publish the correct linear and angular values.  
--Run the Motor Controller Node:  Sends the correct signal to the correct motor over the gpio pins, for the right amount of time.  
--To run the code of the faster robot, you must swap src folder with faster_src folder.
+#### Algorithm and Implementation
 
-Demo:  
--Download .mp4 file = 54 second robot  
--Download .mov file = 38 second robot  
+The robot uses a modular ROS 2 perception and control pipeline to convert camera images into real-time steering commands.
+
+###### Camera Capture
+- Captures 640×480 RGB images from the Raspberry Pi Camera using a GStreamer pipeline.
+- Converts image frames into ROS 2 image messages using OpenCV and `cv_bridge`.
+- Publishes synchronized `Image` and `CameraInfo` messages.
+
+###### Image Processing
+- Converts RGB images to grayscale.
+- Applies binary thresholding to isolate the white line from the background.
+- Publishes the thresholded image for downstream processing.
+
+###### Line Detection
+- Computes the centroid of the detected line using OpenCV image moments.
+- Calculates steering error as the horizontal distance between the line centroid and the center of the image.
+- Processes every third image frame to reduce computation and improve controller responsiveness.
+
+###### Proportional Steering Control
+- Uses a proportional (P) controller to convert centroid error into an angular steering command.
+- Publishes linear and angular velocity commands (`/cmd_vel`) for robot navigation.
+
+###### Differential Drive Motor Control
+- Converts velocity commands into GPIO signals for the L298N motor driver.
+- Controls the left and right motors independently to drive forward, turn, and perform smooth curved steering.
+- Applies steering thresholds and pulsed motor commands to reduce oscillation and improve tracking performance.
 
 Improvements:  
 -The faster robot was thanks to adjusting camera location, and increasing frame rate I published in the Camera Driver Node.  
