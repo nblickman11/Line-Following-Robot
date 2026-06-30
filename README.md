@@ -23,7 +23,7 @@ GStreamer – Camera streaming framework.
 C++ – Core robotics software implementation.  
 GPIO Library – Controls the L298N motor driver via Raspberry Pi GPIO pins.  
 
-#### Algorithm and Implementation
+#### Algorithm and Implementation:
 
 The robot uses a modular ROS 2 perception and control pipeline to convert camera images into real-time steering commands.
 
@@ -51,10 +51,9 @@ The robot uses a modular ROS 2 perception and control pipeline to convert camera
 - Controls the left and right motors independently to drive forward, turn, and perform smooth curved steering.
 - Applies steering thresholds and pulsed motor commands to reduce oscillation and improve tracking performance.
 
-Improvements:  
--The faster robot was thanks to adjusting camera location, and increasing frame rate I published in the Camera Driver Node.  
--Also, I reduced the frames sent to the motor later down the node pipeline so that the motor control could keep up with the images it was seeing in real time.  
--In addition, in the motor node, I compare the resulting value of the P-Control centroid calculation which represents our error from the center, to, a threshold.
-An error that is higher than the threshold resulted in a turn, but this was causing too much over-correction, and the robot moved horizontally too much.
-Increasing that threshold value allowed for less turns, and a faster robot.  
--This faster robot started to overshoot the turns, so I increased the size of the image to look further ahead, which successfully prevented this.
+#### Improvements:
+
+- Improved overall lap time by repositioning the camera and increasing the camera frame rate in the Camera Driver node, allowing the robot to detect upcoming turns earlier.
+- Reduced the number of image frames processed downstream in the ROS 2 pipeline, allowing the motor controller to keep pace with incoming sensor data and reducing control latency.
+- Tuned the proportional steering controller by increasing the steering threshold. Small centroid errors were ignored, reducing unnecessary steering corrections, minimizing oscillation, and allowing the robot to maintain higher speeds.
+- Increased the image region used for line detection, enabling the robot to look farther ahead on the track. This reduced overshooting during turns and produced smoother, more stable navigation.
