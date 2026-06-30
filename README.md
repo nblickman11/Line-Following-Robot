@@ -8,6 +8,8 @@ https://youtube.com/shorts/W9OxeIG6SVM?feature=share
 Hardware Used:   
 -Motors, Chassis, Dupont Wires, L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card.  
 
+<img width="1536" height="2048" alt="IMG_0534" src="https://github.com/user-attachments/assets/23201af6-87ec-41c3-a4cd-59e60bc1b80b" />
+
 Software Used:   
 -ROS, C++, Python, Ubuntu OS.
 
