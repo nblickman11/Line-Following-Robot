@@ -2,6 +2,7 @@
 
 I built a ROS 2-based autonomous line-following robot from scratch using a Raspberry Pi. The robot performs real-time computer vision using an onboard camera, computes steering commands with centroid-based proportional control, and controls a differential-drive platform through a modular ROS 2 software architecture.
 
+Link to the video:
 https://youtube.com/shorts/W9OxeIG6SVM?feature=share
 
 Hardware Used:   
