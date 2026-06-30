@@ -70,11 +70,11 @@ private:
 	  const double linear_threshold = 0.01;
 	  const double angular_threshold = 0.01;
 
-	  if (std::abs(lin - last_linear_x_) < linear_threshold &&
-	    std::abs(ang - last_angular_z_) < angular_threshold) {
+//	  if (std::abs(lin - last_linear_x_) < linear_threshold &&
+//	    std::abs(ang - last_angular_z_) < angular_threshold) {
 	    // Command not changed significantly, skip processing
-	    return;
-	  }
+//	    return;
+//	  }
 
 	RCLCPP_INFO(this->get_logger(), "Received cmd_vel: linear.x=%.6f angular.z=%.7f", lin, ang);
 
@@ -83,7 +83,7 @@ private:
     	ang = std::clamp(ang, -1.0, 1.0);
 
     // Deadzone threshold
-    const double threshold = 0.00005;
+    const double threshold = 0.0002; // make bigger so we turn less.  if error is low enough, angle is low, less than threshold, so goes straight.
 
     //if (std::abs(lin) < threshold && std::abs(ang) < threshold) {
       //  stopMotors();

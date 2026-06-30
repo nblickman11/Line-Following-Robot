@@ -9,6 +9,7 @@ public:
   ImageFilterNode()
   : Node("image_filter_node")
   {
+
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
       "/camera/image_raw",
       10,
@@ -29,12 +30,12 @@ private:
       cv::Mat cv_image = cv_bridge::toCvCopy(msg, "bgr8")->image;
 
     // ROI: bottom slice of image
-    int height = cv_image.rows;
-      cv::Mat roi = cv_image(cv::Range(height - 50, height), cv::Range::all());
+    //int height = cv_image.rows;
+      //cv::Mat roi = cv_image(cv::Range(height - 50, height), cv::Range::all());
 
       // Convert to grayscale
       cv::Mat gray;
-      cv::cvtColor(roi, gray, cv::COLOR_BGR2GRAY);
+      cv::cvtColor(cv_image, gray, cv::COLOR_BGR2GRAY);
 
 double minVal, maxVal;
 cv::minMaxLoc(gray, &minVal, &maxVal);
@@ -72,4 +73,3 @@ int main(int argc, char * argv[])
   rclcpp::shutdown();
   return 0;
 }
-

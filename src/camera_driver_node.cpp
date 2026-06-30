@@ -42,8 +42,8 @@ public:
 
     // Start a timer to poll frames
     timer_ = this->create_wall_timer(
-      std::chrono::milliseconds(60),  // 18 FPS; For line following bot, it may need adustment.
-      std::bind(&GstCameraNode::capture_frame, this)
+      std::chrono::milliseconds(80),  //  FPS; For line following bot, it may need adustment.
+       std::bind(&GstCameraNode::capture_frame, this)
     );
   }
 
