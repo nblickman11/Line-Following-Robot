@@ -10,13 +10,18 @@ https://youtube.com/shorts/W9OxeIG6SVM?feature=share
 <img width="1052" height="926" alt="Screenshot 2026-06-30 at 4 57 26 PM" src="https://github.com/user-attachments/assets/a46be888-1a78-467c-9791-1c12c59900e4" />
 
 #### Hardware Used:   
--L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card, Motors, Chassis, Dupont Wires.  
+L298N Driver, Rasberry Pi Camera, Rasberry Pi Computer, Double AA Batteries, SD Card, Motors, Chassis, Dupont Wires.  
 <img width="384" height="512" alt="IMG_0534" src="https://github.com/user-attachments/assets/23201af6-87ec-41c3-a4cd-59e60bc1b80b" />
 <img width="248" height="325" alt="Screenshot 2026-06-30 at 3 50 09 PM" src="https://github.com/user-attachments/assets/ad7a8110-d954-4186-95e0-84866be1b838" />
 <img width="166" height="190" alt="Screenshot 2026-06-30 at 3 50 03 PM" src="https://github.com/user-attachments/assets/e439481e-6874-45e8-baa0-f11a56b1b4ca" />
 
-Software Used:   
--ROS, C++, Python, Ubuntu OS.
+#### Software Used:   
+ROS 2 – Robotics middleware for inter-node communication.
+Ubuntu – Linux operating system running on the Raspberry Pi.
+OpenCV – Image processing and computer vision.
+GStreamer – Camera streaming framework.
+C++ – Core robotics software implementation.
+GPIO Library – Controls the L298N motor driver via Raspberry Pi GPIO pins.
 
 How to run the code:    
 -Build and Source your ROS Workspace!  
