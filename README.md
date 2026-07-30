@@ -30,7 +30,7 @@ The robot uses a modular ROS 2 perception and control pipeline to convert camera
 ###### Camera Capture (camera_driver_node)
 - Captures 640×480 RGB images from the Raspberry Pi Camera using a GStreamer pipeline.
 - Converts image frames into ROS 2 image messages using OpenCV and `cv_bridge`.
-- Publishes synchronized `Image` and `CameraInfo` messages.
+- Publishes synchronized `Image` messages.
 
 ###### Image Processing (image_filter_node)
 - Converts RGB images to grayscale.
