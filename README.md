@@ -23,36 +23,33 @@ GStreamer – Camera streaming framework.
 C++ – Core robotics software implementation.  
 GPIO Library – Controls the L298N motor driver via Raspberry Pi GPIO pins.  
 
-#### Algorithm and Implementation:
+#### Software Design and Implementation:
 
 The robot uses a modular ROS 2 perception and control pipeline to convert camera images into real-time steering commands.
 
-###### Camera Capture
+###### Camera Capture (camera_driver_node)
 - Captures 640×480 RGB images from the Raspberry Pi Camera using a GStreamer pipeline.
 - Converts image frames into ROS 2 image messages using OpenCV and `cv_bridge`.
 - Publishes synchronized `Image` and `CameraInfo` messages.
 
-###### Image Processing
+###### Image Processing (image_filter_node)
 - Converts RGB images to grayscale.
 - Applies binary thresholding to isolate the white line from the background.
 - Publishes the thresholded image for downstream processing.
 
-###### Line Detection
+###### Line Detection and Steering (line_follower_node)
 - Computes the centroid of the detected line using OpenCV image moments.
 - Calculates steering error as the horizontal distance between the line centroid and the center of the image.
 - Processes every third image frame to reduce computation and improve controller responsiveness.
-
-###### Proportional Steering Control
 - Uses a proportional (P) controller to convert centroid error into an angular steering command.
 - Publishes linear and angular velocity commands (`/cmd_vel`) for robot navigation.
 
-###### Differential Drive Motor Control
+###### Differential Drive Motor Control (motor_controller_node)
 - Converts velocity commands into GPIO signals for the L298N motor driver.
 - Controls the left and right motors independently to drive forward, turn, and perform smooth curved steering.
 - Applies steering thresholds and pulsed motor commands to reduce oscillation and improve tracking performance.
 
 #### Improvements:
-
 - Improved overall lap time by repositioning the camera and increasing the camera frame rate in the Camera Driver node, allowing the robot to detect upcoming turns earlier.
 - Reduced the number of image frames processed downstream in the ROS 2 pipeline, allowing the motor controller to keep pace with incoming sensor data and reducing control latency.
 - Tuned the proportional steering controller by increasing the steering threshold. Small centroid errors were ignored, reducing unnecessary steering corrections, minimizing oscillation, and allowing the robot to maintain higher speeds.
