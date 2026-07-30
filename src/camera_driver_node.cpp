@@ -1,6 +1,5 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/camera_info.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.hpp>
 
@@ -12,16 +11,11 @@ class GstCameraNode : public rclcpp::Node {
 public:
   GstCameraNode() : Node("gst_camera_node") {
     publisher_ = image_transport::create_publisher(this, "camera/image_raw");
-    camera_info_pub_ = this->create_publisher<sensor_msgs::msg::CameraInfo>("camera/camera_info", 10);
-
+    
     // Initialize GStreamer
     gst_init(nullptr, nullptr);
 
     // Create the GStreamer pipeline
-    //std::string pipeline_desc =
-      //"libcamerasrc ! video/x-raw,width=640,height=480,framerate=30/1 "
-      //"! videoconvert ! appsink name=sink";
-
     std::string pipeline_desc = "libcamerasrc ! video/x-raw,width=640,height=480,framerate=30/1,format=RGB ! appsink name=sink";
 
     GError *error = nullptr;
@@ -42,7 +36,7 @@ public:
 
     // Start a timer to poll frames
     timer_ = this->create_wall_timer(
-      std::chrono::milliseconds(80),  //  FPS; For line following bot, it may need adustment.
+      std::chrono::milliseconds(80),  // Poll at approximately 12.5 Hz
        std::bind(&GstCameraNode::capture_frame, this)
     );
   }
@@ -54,7 +48,7 @@ public:
 
 private:
   void capture_frame() {
-    GstSample *sample = gst_app_sink_try_pull_sample((GstAppSink *)appsink_, 1000000);  // 1s timeout
+    GstSample *sample = gst_app_sink_try_pull_sample((GstAppSink *)appsink_, 1000000);  // 1ms timeout
 
     if (!sample) {
       RCLCPP_WARN(this->get_logger(), "No sample received from appsink.");
@@ -83,64 +77,20 @@ private:
     ).toImageMsg();
 
     auto now = this->get_clock()->now();
-
     msg->header.stamp = now;
     msg->header.frame_id = "camera_frame";
 
     RCLCPP_INFO(this->get_logger(), "Publishing image: %dx%d", msg->width, msg->height);
 
-
-    // Create and publish CameraInfo message
-    sensor_msgs::msg::CameraInfo camera_info = generate_camera_info(width, height);
-    camera_info.header.stamp = now;
-    camera_info.header.frame_id = "camera_frame";
-
-
     publisher_.publish(msg);
-    camera_info_pub_->publish(camera_info);
-
+    
     gst_buffer_unmap(buffer, &map);
     gst_sample_unref(sample);
   }
 
-  sensor_msgs::msg::CameraInfo generate_camera_info(int width, int height) {
-    sensor_msgs::msg::CameraInfo info;
-    info.width = width;
-    info.height = height;
-    info.distortion_model = "plumb_bob";
-
-    // Assume pinhole camera model with focal length fx=fy=500, cx=width/2, cy=height/2
-    double fx = 500.0;
-    double fy = 500.0;
-    double cx = width / 2.0;
-    double cy = height / 2.0;
-
-    info.k = {
-      fx, 0.0, cx,
-      0.0, fy, cy,
-      0.0, 0.0, 1.0
-    };
-
-    info.p = {
-      fx, 0.0, cx, 0.0,
-      0.0, fy, cy, 0.0,
-      0.0, 0.0, 1.0, 0.0
-    };
-
-    info.r = {
-      1.0, 0.0, 0.0,
-      0.0, 1.0, 0.0,
-      0.0, 0.0, 1.0
-    };
-
-    info.d = {0.0, 0.0, 0.0, 0.0, 0.0};  // no distortion
-    return info;
-  }
-
   GstElement *pipeline_;
-  GstElement *appsink_;  // ✅ Now a class member
+  GstElement *appsink_; 
   image_transport::Publisher publisher_;
-  rclcpp::Publisher<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
