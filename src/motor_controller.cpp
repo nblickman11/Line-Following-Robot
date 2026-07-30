@@ -63,18 +63,14 @@ private:
     {
         double lin = msg->linear.x;     // forward/backward command
         double ang = msg->angular.z;    // turning command
-
-	    // Threshold for detecting meaningful changes
-	    const double linear_threshold = 0.01;
-	    const double angular_threshold = 0.01;
 		
 		RCLCPP_INFO(this->get_logger(), "Received cmd_vel: linear.x=%.6f angular.z=%.7f", lin, ang);
 
     	// Prevent robot from spinning; Clamp angular velocity to safe range
     	ang = std::clamp(ang, -1.0, 1.0);
 	
-	    // Deadzone threshold
-	    const double threshold = 0.0002; // make bigger so we turn less.  if error is low enough, angle is low, less than threshold, so goes straight.
+	    // Deadzone threshold; If our error is not as large as the threshold we don't make turns, just go straight.
+	    const double threshold = 0.0002;
 
 	    if (lin > 0) {
 	        if (ang > threshold) {
@@ -124,7 +120,6 @@ private:
         in4.set_value(1);
         RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Moving forward");
     }
-
     void driveBackward()
     {
         in1.set_value(0);  // Motor A: backward
@@ -151,7 +146,6 @@ private:
         in4.set_value(0);
         RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Turning right");
     }
-
     void stopMotors()
     {
         in1.set_value(0);
@@ -168,7 +162,6 @@ private:
 	    in4.set_value(0); // slow/stop right motor to curve left
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving left forward");
 	}
-
 	void curveRightForward()
 	{
 	    in1.set_value(0);
@@ -177,7 +170,6 @@ private:
 	    in4.set_value(1);
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving right forward");
 	}
-
 	void curveLeftBackward()
 	{
 	    in1.set_value(0);
@@ -186,7 +178,6 @@ private:
 	    in4.set_value(0);
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving left backward");
 	}
-
 	void curveRightBackward()
 	{
 	    in1.set_value(0);
@@ -195,8 +186,6 @@ private:
 	    in4.set_value(0);
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving right backward");
 	}
-	double last_linear_x_ = 0.0;
-	double last_angular_z_ = 0.0;
 };
 
 int main(int argc, char **argv)
