@@ -2,6 +2,9 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <gpiod.hpp>
 #include <chrono>
+#include <algorithm>  // std::clamp
+#include <cmath>      // std::abs
+#include <thread>     // std::this_thread::sleep_for
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
@@ -58,77 +61,61 @@ private:
     //   - angular.z for rotation (turning left/right)
     void cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
     {
-	// A minor change in value causes big robot change, so don't react so quick.
-    	//rclcpp::Time now = this->get_clock()->now();
-   	//if ((now - last_cmd_time_).seconds() < 0.2) return;
-    	//last_cmd_time_ = now;
-
         double lin = msg->linear.x;     // forward/backward command
         double ang = msg->angular.z;    // turning command
 
-	 // Threshold for detecting meaningful changes
-	  const double linear_threshold = 0.01;
-	  const double angular_threshold = 0.01;
-
-//	  if (std::abs(lin - last_linear_x_) < linear_threshold &&
-//	    std::abs(ang - last_angular_z_) < angular_threshold) {
-	    // Command not changed significantly, skip processing
-//	    return;
-//	  }
-
-	RCLCPP_INFO(this->get_logger(), "Received cmd_vel: linear.x=%.6f angular.z=%.7f", lin, ang);
-
+	    // Threshold for detecting meaningful changes
+	    const double linear_threshold = 0.01;
+	    const double angular_threshold = 0.01;
+		
+		RCLCPP_INFO(this->get_logger(), "Received cmd_vel: linear.x=%.6f angular.z=%.7f", lin, ang);
 
     	// Prevent robot from spinning; Clamp angular velocity to safe range
     	ang = std::clamp(ang, -1.0, 1.0);
+	
+	    // Deadzone threshold
+	    const double threshold = 0.0002; // make bigger so we turn less.  if error is low enough, angle is low, less than threshold, so goes straight.
 
-    // Deadzone threshold
-    const double threshold = 0.0002; // make bigger so we turn less.  if error is low enough, angle is low, less than threshold, so goes straight.
-
-    //if (std::abs(lin) < threshold && std::abs(ang) < threshold) {
-      //  stopMotors();
-       // return;
-    // }
-
-    if (lin > 0) {
-        if (ang > threshold) {
-            // Curve Left Forward
-            curveLeftForward();
-        } else if (ang < -threshold) {
-            // Curve Right Forward
-            curveRightForward();
-        } else {
-            driveForward();
-        }
-    } else if (lin < 0) {
-        if (ang > threshold) {
-            // Curve Left Backward
-            curveRightBackward();
-        } else if (ang < -threshold) {
-            // Curve Right Backward
-            curveLeftBackward();
-        } else {
-            driveBackward();
-        }
-    } else {
-        if (ang > threshold) {
-            turnLeft();
-        } else if (ang < -threshold) {
-            turnRight();
-        } else {
-	    
-            stopMotors();
-        }
-
-    }
-    // Only Pulse Motors
+	    if (lin > 0) {
+	        if (ang > threshold) {
+	            // Curve Left Forward
+	            curveLeftForward();
+	        } else if (ang < -threshold) {
+	            // Curve Right Forward
+	            curveRightForward();
+	        } else {
+	            driveForward();
+	        }
+	    } else if (lin < 0) {
+	        if (ang > threshold) {
+	            // Curve Left Backward
+	            curveRightBackward();
+	        } else if (ang < -threshold) {
+	            // Curve Right Backward
+	            curveLeftBackward();
+	        } else {
+	            driveBackward();
+	        }
+	    } else {
+	        if (ang > threshold) {
+	            turnLeft();
+	        } else if (ang < -threshold) {
+	            turnRight();
+	        } else {
+		    
+	            stopMotors();
+	        }
+	
+	    }
+    	// Only Pulse Motors
+		// I used a blocking delay as a straightforward way to pulse the motors on this prototype. 
+		// ...In a more extensible implementation, I would avoid blocking the subscriber callback..
+		// ..and use a timer or a small motor-control state machine to schedule the stop command.
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
     	stopMotors();
     }
 
     // These functions directly control motor GPIO lines
-
     void driveForward()
     {
         in1.set_value(1);  // Motor A: forward
@@ -208,7 +195,6 @@ private:
 	    in4.set_value(0);
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving right backward");
 	}
-
 	double last_linear_x_ = 0.0;
 	double last_angular_z_ = 0.0;
 };
