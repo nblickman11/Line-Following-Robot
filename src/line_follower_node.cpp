@@ -61,9 +61,8 @@ private:
     } else {
       cmd.linear.x = 0.0;
       cmd.angular.z = 0.0;
-      RCLCPP_WARN(this->get_logger(), "Line not found. Rotating...");
+      RCLCPP_WARN(this->get_logger(), "Line not found. Stopping robot.");
     }
-
     cmd_pub_->publish(cmd);
   }
 };
