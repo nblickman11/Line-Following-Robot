@@ -88,8 +88,8 @@ private:
     gst_sample_unref(sample);
   }
 
-  GstElement *pipeline_;
-  GstElement *appsink_; 
+  GstElement *pipeline_ = nullptr;
+  GstElement *appsink_ = nullptr;
   image_transport::Publisher publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
