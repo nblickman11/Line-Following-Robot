@@ -29,9 +29,6 @@ private:
       // Convert ROS Image to OpenCV Mat (BGR8)
       cv::Mat cv_image = cv_bridge::toCvCopy(msg, "bgr8")->image;
 
-      // TODO: Evaluate cropping to a lower image ROI to reduce computation
-      // and improve robustness when only the line near the robot is needed.
-
       // Convert to grayscale
       cv::Mat gray;
       cv::cvtColor(cv_image, gray, cv::COLOR_BGR2GRAY);
