@@ -26,6 +26,7 @@ private:
 
   void image_callback(const sensor_msgs::msg::Image::SharedPtr msg)
   {
+    // Process every third frame to reduce computation and lower control latency on the Raspberry Pi.
     frame_count_++;
     if (frame_count_ % 3 != 0 ){
     	return;
@@ -37,23 +38,23 @@ private:
       RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
       return;
     }
-
     if (binary.empty()) return;
 
     int width = binary.cols;
 
-    // Compute centroid using image moments
+    // Compute the centroid of the white line using image moments.
     cv::Moments M = cv::moments(binary, true);
     geometry_msgs::msg::Twist cmd;
 
-    // If total number of white pixels is greater than 0, a line exists!
+    // If the total number of white pixels is greater than 0, a line exists!
     if (M.m00 > 0) {
-      // centroid x (sum of x coordinates / number of white pixels)
+      // The centroid x-coordinate index of the white line = (the sum of all x-coordinates indices with white pixels / total number of white pixels)
       int cx = static_cast<int>(M.m10 / M.m00);
 
-      // error tells how far our centroid is from center of the image
+      // "error" shows how far the centroid of our white line is from the center of the image.
       int error = cx - width / 2;
 
+      // Use "error" to scale how much the robot must turn.
       cmd.linear.x = 0.15;
       cmd.angular.z = -0.000001 * error;
 
