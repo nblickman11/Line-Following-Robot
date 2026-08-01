@@ -3,11 +3,8 @@
 #include <gpiod.hpp>
 #include <chrono>
 #include <algorithm>  // std::clamp
-#include <cmath>      // std::abs
 #include <thread>     // std::this_thread::sleep_for
-
 using std::placeholders::_1;
-using namespace std::chrono_literals;
 
 class MotorController : public rclcpp::Node
 {
@@ -69,9 +66,12 @@ private:
     	// Prevent robot from spinning; Clamp angular velocity to safe range
     	ang = std::clamp(ang, -1.0, 1.0);
 	
-	    // Deadzone threshold; If our error is not as large as the threshold we don't make turns, just go straight.
+		// Ignore small angular commands to reduce unnecessary steering corrections.
 	    const double threshold = 0.0002;
 
+		// Motor primitives. The current line-following application primarily uses
+		// driveForward(), curveLeftForward(), and curveRightForward(), but additional
+		// motions are provided for future extensibility.
 	    if (lin > 0) {
 	        if (ang > threshold) {
 	            // Curve Left Forward
@@ -101,16 +101,13 @@ private:
 		    
 	            stopMotors();
 	        }
-	
 	    }
-    	// Only Pulse Motors
-		// I used a blocking delay as a straightforward way to pulse the motors on this prototype. 
-		// ...In a more extensible implementation, I would avoid blocking the subscriber callback..
-		// ..and use a timer or a small motor-control state machine to schedule the stop command.
+		// Pulse the motors for this prototype.
+		// A more extensible design would use a timer or state machine
+		// instead of blocking the subscriber callback.
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     	stopMotors();
     }
-
     // These functions directly control motor GPIO lines
     void driveForward()
     {
@@ -128,58 +125,49 @@ private:
         in4.set_value(0);
         RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Moving backward");
     }
-
-    void turnLeft()
-    {
+    void turnLeft(){
         in1.set_value(0);  // Motor A: backward
         in2.set_value(1);
         in3.set_value(0);  // Motor B: forward
         in4.set_value(1);
         RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Turning left");
     }
-
-    void turnRight()
-    {
+    void turnRight(){
         in1.set_value(1);  // Motor A: forward
         in2.set_value(0);
         in3.set_value(1);  // Motor B: backward
         in4.set_value(0);
         RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Turning right");
     }
-    void stopMotors()
-    {
+    void stopMotors(){
         in1.set_value(0);
         in2.set_value(0);
         in3.set_value(0);
         in4.set_value(0);
         RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Stopping motors");
     }
-	void curveLeftForward()
-	{
+	void curveLeftForward(){
 	    in1.set_value(1);
 	    in2.set_value(0);
 	    in3.set_value(0);
 	    in4.set_value(0); // slow/stop right motor to curve left
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving left forward");
 	}
-	void curveRightForward()
-	{
+	void curveRightForward(){
 	    in1.set_value(0);
 	    in2.set_value(0); // slow/stop left motor to curve right
 	    in3.set_value(0);
 	    in4.set_value(1);
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving right forward");
 	}
-	void curveLeftBackward()
-	{
+	void curveLeftBackward(){
 	    in1.set_value(0);
 	    in2.set_value(1);
 	    in3.set_value(0); // slow/stop right motor to curve left backward
 	    in4.set_value(0);
 	    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Curving left backward");
 	}
-	void curveRightBackward()
-	{
+	void curveRightBackward(){
 	    in1.set_value(0);
 	    in2.set_value(0); // slow/stop left motor to curve right backward
 	    in3.set_value(1);
