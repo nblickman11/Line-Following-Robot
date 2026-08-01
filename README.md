@@ -50,7 +50,7 @@ The robot uses a modular ROS 2 perception and control pipeline to convert camera
 - Applies steering thresholds and pulsed motor commands to reduce oscillation and improve tracking performance.
 
 #### Improvements:
-- Improved overall lap time by repositioning the camera and increasing the camera frame rate in the Camera Driver node, allowing the robot to detect upcoming turns earlier.
-- Reduced the number of image frames processed downstream in the ROS 2 pipeline, allowing the motor controller to keep pace with incoming sensor data and reducing control latency.
+- Improved lap time by repositioning the camera to increase look-ahead before turns and tuning the camera polling interval to better match the processing capabilities of the Raspberry Pi.  
+- Reduced downstream image-processing workload by intentionally processing every third image frame, allowing the controller to keep pace with incoming sensor data and reducing control latency.  
 - Tuned the proportional steering controller by increasing the steering threshold. Small centroid errors were ignored, reducing unnecessary steering corrections, minimizing oscillation, and allowing the robot to maintain higher speeds.
 - Increased the image region used for line detection, enabling the robot to look farther ahead on the track. This reduced overshooting during turns and produced smoother, more stable navigation.
